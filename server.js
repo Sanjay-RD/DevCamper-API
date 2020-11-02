@@ -5,6 +5,7 @@ const morgan = require("morgan");
 const connectDB = require("./config/db");
 // Bringing colors
 const colors = require("colors");
+const handleError = require("./middleware/error");
 
 // route file
 const bootcamps = require("./routes/bootcamps");
@@ -29,6 +30,8 @@ if (process.env.NODE_ENV === "development") {
 
 // Moute Router
 app.use("/api/v1/bootcamps", bootcamps);
+
+app.use(handleError);
 
 const PORT = process.env.PORT || 5000;
 
