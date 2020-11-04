@@ -83,6 +83,16 @@ exports.updateBootcamps = asyncHandler(async (req, res, next) => {
     new: true,
     runValidators: true,
   });
+
+  if (!bootcamp) {
+    return next(
+      new errorResponse(
+        `Bootcamp not found with the id of ${req.params.id}`,
+        404
+      )
+    );
+  }
+
   res.status(200).json({
     success: true,
     data: bootcamp,
@@ -97,6 +107,14 @@ exports.deleteBootcamps = asyncHandler(async (req, res, next) => {
   //   .status(200)
   //   .json({ success: true, msg: `Delete bootcamps of ${req.params.id}` });
   const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
+  if (!bootcamp) {
+    return next(
+      new errorResponse(
+        `Bootcamp not found with the id of ${req.params.id}`,
+        404
+      )
+    );
+  }
   res.status(200).json({
     success: true,
     data: {},
