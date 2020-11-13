@@ -24,9 +24,9 @@ connectDB();
 // app.use(logger);
 
 // Dev logging middleware
-if (process.env.NODE_ENV === "development") {
-  app.use(morgan("dev"));
-}
+// if (process.env.NODE_ENV === "development") {
+//   app.use(morgan("dev"));
+// }
 
 // Moute Router
 app.use("/api/v1/bootcamps", bootcamps);
