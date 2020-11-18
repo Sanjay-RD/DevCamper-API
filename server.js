@@ -9,6 +9,7 @@ const handleError = require("./middleware/error");
 
 // route file
 const bootcamps = require("./routes/bootcamps");
+const courses = require("./routes/courses");
 
 // set environment veriable
 dotenv.config({ path: "./config/config.env" });
@@ -30,6 +31,7 @@ connectDB();
 
 // Moute Router
 app.use("/api/v1/bootcamps", bootcamps);
+app.use("/api/v1/courses", courses);
 
 app.use(handleError);
 
