@@ -43,7 +43,7 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
     (match) => `$${match}`
   );
 
-  query = Bootcamp.find(JSON.parse(queryStr));
+  query = Bootcamp.find(JSON.parse(queryStr)).populate("courses");
 
   if (req.query.select) {
     let field = req.query.select.split(",").join(" ");
@@ -170,7 +170,7 @@ exports.deleteBootcamps = asyncHandler(async (req, res, next) => {
   // res
   //   .status(200)
   //   .json({ success: true, msg: `Delete bootcamps of ${req.params.id}` });
-  const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
+  const bootcamp = await Bootcamp.findById(req.params.id);
   if (!bootcamp) {
     return next(
       new errorResponse(
@@ -179,6 +179,8 @@ exports.deleteBootcamps = asyncHandler(async (req, res, next) => {
       )
     );
   }
+
+  bootcamp.remove();
   res.status(200).json({
     success: true,
     data: {},
