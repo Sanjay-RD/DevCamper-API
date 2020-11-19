@@ -2,6 +2,7 @@ const Courses = require("../models/Course");
 const Bootcamp = require("../models/Bootcamp");
 const asyncHandler = require("../middleware/async");
 const ErrorResponse = require("../utils/errorResponse");
+const Course = require("../models/Course");
 
 // @desc     Get all the courses
 // router    GET api/v1/courses
@@ -66,5 +67,46 @@ exports.addCourse = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     data: course,
+  });
+});
+
+// @desc     Update courses
+// router    PUT api/v1/course/:id
+// access    private
+exports.updateCourse = asyncHandler(async (req, res, next) => {
+  const course = await Course.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!course) {
+    return next(
+      new ErrorResponse(`No course with the id of ${req.params.id}`, 400)
+    );
+  }
+
+  res.status(200).json({
+    success: true,
+    data: course,
+  });
+});
+
+// @desc     Delete courses
+// router    delete api/v1/course/:id
+// access    private
+exports.deleteCourse = asyncHandler(async (req, res, next) => {
+  let course = await Course.findById(req.params.id);
+
+  if (!course) {
+    return next(
+      new ErrorResponse(`No course with the id of ${req.params.id}`, 400)
+    );
+  }
+
+  course.remove();
+
+  res.status(200).json({
+    success: true,
+    data: {},
   });
 });
