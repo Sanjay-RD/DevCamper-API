@@ -6,6 +6,8 @@ const connectDB = require("./config/db");
 // Bringing colors
 const colors = require("colors");
 const handleError = require("./middleware/error");
+const fileupload = require("express-fileupload");
+const path = require("path");
 
 // route file
 const bootcamps = require("./routes/bootcamps");
@@ -28,6 +30,12 @@ connectDB();
 // if (process.env.NODE_ENV === "development") {
 //   app.use(morgan("dev"));
 // }
+
+// photo uploader
+app.use(fileupload());
+
+// set static folder
+app.use(express.static(path.join(__dirname, "public")));
 
 // Moute Router
 app.use("/api/v1/bootcamps", bootcamps);
