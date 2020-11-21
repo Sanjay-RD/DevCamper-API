@@ -1,23 +1,22 @@
 const Courses = require("../models/Course");
 const Bootcamp = require("../models/Bootcamp");
 const asyncHandler = require("../middleware/async");
-const ErrorResponse = require("../utils/errorResponse");
-const Course = require("../models/Course");
+const errorResponse = require("../utils/errorResponse");
 
 // @desc     Get all the courses
 // router    GET api/v1/courses
 //           GET api/v1/bootcamp/:bootcampId/courses
 // access    public
 exports.getCourses = asyncHandler(async (req, res, next) => {
-  let query;
-
   if (req.params.bootcampId) {
-    query = Courses.find({ bootcamp: req.params.bootcampId });
-  } else {
-    query = Courses.find().populate({
-      path: "bootcamp",
-      select: "name description",
+    const course = Courses.find({ bootcamp: req.params.bootcampId });
+    return res.status(200).json({
+      success: true,
+      count: course.length,
+      data: course,
     });
+  } else {
+    res.status(200).json(res.advancedResult);
   }
 
   const course = await query;
@@ -39,7 +38,7 @@ exports.getCourse = asyncHandler(async (req, res, next) => {
 
   if (!course) {
     return next(
-      new ErrorResponse(`No course with the id of ${req.params.id}`, 400)
+      new errorResponse(`No course with the id of ${req.params.id}`, 400)
     );
   }
 
@@ -58,7 +57,7 @@ exports.addCourse = asyncHandler(async (req, res, next) => {
 
   if (!bootcamp) {
     return next(
-      new ErrorResponse(`No bootcamp with the id of ${req.params.id}`, 400)
+      new errorResponse(`No bootcamp with the id of ${req.params.id}`, 400)
     );
   }
 
@@ -74,14 +73,14 @@ exports.addCourse = asyncHandler(async (req, res, next) => {
 // router    PUT api/v1/course/:id
 // access    private
 exports.updateCourse = asyncHandler(async (req, res, next) => {
-  const course = await Course.findByIdAndUpdate(req.params.id, req.body, {
+  const course = await Courses.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
   });
 
   if (!course) {
     return next(
-      new ErrorResponse(`No course with the id of ${req.params.id}`, 400)
+      new errorResponse(`No course with the id of ${req.params.id}`, 400)
     );
   }
 
@@ -95,11 +94,11 @@ exports.updateCourse = asyncHandler(async (req, res, next) => {
 // router    delete api/v1/course/:id
 // access    private
 exports.deleteCourse = asyncHandler(async (req, res, next) => {
-  let course = await Course.findById(req.params.id);
+  let course = await Courses.findById(req.params.id);
 
   if (!course) {
     return next(
-      new ErrorResponse(`No course with the id of ${req.params.id}`, 400)
+      new errorResponse(`No course with the id of ${req.params.id}`, 400)
     );
   }
 
