@@ -7,6 +7,7 @@ const connectDB = require("./config/db");
 const colors = require("colors");
 const handleError = require("./middleware/error");
 const fileupload = require("express-fileupload");
+const cookieParser = require("cookie-parser");
 const path = require("path");
 
 // route file
@@ -22,6 +23,9 @@ const app = express();
 // Body parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// cookie parser
+app.use(cookieParser());
 
 connectDB();
 
