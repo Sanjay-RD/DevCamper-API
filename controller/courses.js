@@ -46,11 +46,22 @@ exports.getCourse = asyncHandler(async (req, res, next) => {
 // access    private
 exports.addCourse = asyncHandler(async (req, res, next) => {
   req.body.bootcamp = req.params.bootcampId;
+
+  // Add user
+  req.body.user = req.user.id;
+
   const bootcamp = await Bootcamp.findById(req.params.bootcampId);
 
   if (!bootcamp) {
     return next(
       new errorResponse(`No bootcamp with the id of ${req.params.id}`, 400)
+    );
+  }
+
+  // Make user user is bootcamp ownership
+  if (bootcamp.user.toString() !== req.user.id && req.user.role !== "admin") {
+    return next(
+      new errorResponse(`User ${req.user.id} is not authorized to add a course`)
     );
   }
 
@@ -66,16 +77,27 @@ exports.addCourse = asyncHandler(async (req, res, next) => {
 // router    PUT api/v1/course/:id
 // access    private
 exports.updateCourse = asyncHandler(async (req, res, next) => {
-  const course = await Courses.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
+  let course = await Courses.findById(req.params.id);
 
   if (!course) {
     return next(
       new errorResponse(`No course with the id of ${req.params.id}`, 400)
     );
   }
+
+  // Make user user is bootcamp ownership
+  if (bootcamp.user.toString() !== req.user.id && req.user.role !== "admin") {
+    return next(
+      new errorResponse(
+        `User ${req.user.id} is not authorized to Update a course`
+      )
+    );
+  }
+
+  course = await Courses.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
 
   res.status(200).json({
     success: true,
@@ -92,6 +114,15 @@ exports.deleteCourse = asyncHandler(async (req, res, next) => {
   if (!course) {
     return next(
       new errorResponse(`No course with the id of ${req.params.id}`, 400)
+    );
+  }
+
+  // Make user user is bootcamp ownership
+  if (course.user.toString() !== req.user.id && req.user.role !== "admin") {
+    return next(
+      new errorResponse(
+        `User ${req.user.id} is not authorized to delete a course`
+      )
     );
   }
 
