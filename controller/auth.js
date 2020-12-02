@@ -95,10 +95,10 @@ exports.forgetPassword = asyncHandler(async (req, res, next) => {
     return next(new errorResponse("Email could not be sent", 500));
   }
 
-  res.status(200).json({
-    success: true,
-    data: user,
-  });
+  // res.status(200).json({
+  //   success: true,
+  //   data: user,
+  // });
 });
 
 // Get token from model ,create cookie and send response
